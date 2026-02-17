@@ -3,12 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skener Faktúr — PDF + Obrázky → Excel / HTML Report</title>
+<title>Skener Faktúr — Panská 17</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0f1017;--bg2:#13141d;--bg3:#181926;--border:#1c1e2e;--border2:#252838;--text:#cdd0dc;--text2:#8b8fa3;--text3:#636987;--text4:#4e5268;--white:#f0f0f0;--purple:#a78bfa;--blue:#2563eb;--violet:#7c3aed;--green:#22c55e;--red:#f87171;--yellow:#eab308}
+:root{--bg:#0f1017;--bg2:#13141d;--bg3:#181926;--border:#1c1e2e;--border2:#252838;
+--text:#cdd0dc;--text2:#8b8fa3;--text3:#636987;--text4:#4e5268;
+--white:#f0f0f0;--purple:#a78bfa;--blue:#2563eb;--violet:#7c3aed;
+--green:#22c55e;--red:#f87171;--yellow:#eab308}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 a{color:var(--purple)}
 .header{border-bottom:1px solid var(--border);background:linear-gradient(180deg,#15161f,var(--bg))}
@@ -36,25 +39,29 @@ a{color:var(--purple)}
 .panel-title{font-size:16px;font-weight:600;color:var(--white)}
 .panel-sub{font-size:12px;color:var(--text3);margin-top:2px}
 .btn{padding:9px 22px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none}
-.btn:hover{opacity:0.9}
-.btn-primary{background:linear-gradient(135deg,var(--violet),var(--blue));color:#fff;box-shadow:0 2px 12px rgba(124,58,237,0.3)}
+.btn:hover{opacity:0.85}
+.btn-primary{background:linear-gradient(135deg,var(--violet),var(--blue));color:#fff}
 .btn-stop{border:1px solid #7f1d1d;background:rgba(127,29,29,0.2);color:var(--red)}
+.btn-sm{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;border:none}
+.btn-save{background:var(--green);color:#000}
+.btn-cancel{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.btn-edit{background:transparent;border:1px solid var(--border2);color:var(--purple);cursor:pointer;padding:5px 12px;border-radius:7px;font-size:12px;font-family:inherit}
+.btn-del{background:transparent;border:1px solid #7f1d1d;color:var(--red);cursor:pointer;padding:5px 12px;border-radius:7px;font-size:12px;font-family:inherit}
+.btn-add{background:rgba(124,58,237,0.1);border:1px dashed var(--violet);color:var(--purple);cursor:pointer;padding:6px 14px;border-radius:7px;font-size:12px;font-family:inherit;width:100%;margin-top:8px}
 .btn-reset{padding:7px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:inherit}
 .btn-danger{padding:7px 16px;border-radius:8px;border:1px solid #7f1d1d;background:transparent;color:var(--red);font-size:13px;cursor:pointer;font-family:inherit}
-.btn-excel{display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;border:none;background:linear-gradient(135deg,#166534,#15803d);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
-.btn-html{display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;border:none;background:linear-gradient(135deg,#9333ea,#7c3aed);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-excel{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,#166534,#15803d);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-html{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,#9333ea,#7c3aed);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
 .prog-wrap{padding:12px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
 .prog-bar{flex:1;height:6px;border-radius:3px;background:var(--border);overflow:hidden}
 .prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--violet),var(--blue));transition:width 0.4s ease}
 .prog-text{font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;min-width:80px;text-align:right}
 .file-list{max-height:320px;overflow-y:auto}
 .file-row{display:flex;align-items:center;gap:10px;padding:9px 20px;border-bottom:1px solid #141520;font-size:13px}
-.file-row.active{background:rgba(124,58,237,0.08)}
-.file-row.done{opacity:0.6}.file-row.err{background:rgba(127,29,29,0.08)}
+.file-row.active{background:rgba(124,58,237,0.08)}.file-row.done{opacity:0.6}.file-row.err{background:rgba(127,29,29,0.08)}
 .file-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .file-size{font-size:11px;color:var(--text4);font-family:'JetBrains Mono',monospace}
 .check{color:var(--green);font-weight:700}.err-mark{color:var(--red);font-weight:700}
-.multi-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;background:rgba(167,139,250,0.15);color:var(--purple)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{width:14px;height:14px;border:2px solid rgba(124,58,237,0.2);border-top-color:var(--purple);border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;flex-shrink:0}
 .stats-bar{display:flex;gap:12px;align-items:stretch;margin-bottom:20px;flex-wrap:wrap}
@@ -70,169 +77,247 @@ tr.alt{background:rgba(28,30,46,0.3)}
 .mono{font-family:'JetBrains Mono',monospace;font-size:12px}
 .t-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600}
 .t-pdf{background:rgba(239,68,68,0.12);color:var(--red)}.t-img{background:rgba(96,165,250,0.12);color:#60a5fa}
-.t-multi{background:rgba(167,139,250,0.12);color:var(--purple)}
+.t-multi{background:rgba(167,139,250,0.12);color:var(--purple);font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;margin-left:4px}
 .detail{margin-top:16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;animation:fadeIn 0.25s ease}
 .detail-split{display:grid;grid-template-columns:1fr 1fr;min-height:400px}
 .detail-original{border-right:1px solid var(--border);background:var(--bg);display:flex;flex-direction:column}
-.detail-original-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.detail-original-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .detail-original-body{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:12px}
-.detail-original-body img{max-width:100%;height:auto;border-radius:4px}
-.detail-original-body iframe{width:100%;height:100%;min-height:550px;border:none;border-radius:4px}
-.detail-data{padding:20px;overflow-y:auto;max-height:700px}
+.detail-original-body img{max-width:100%;height:auto;border-radius:4px;transition:transform 0.3s}
+.detail-original-body iframe{width:100%;height:100%;min-height:550px;border:none}
+.detail-data{padding:20px;overflow-y:auto;max-height:800px}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .dh4{margin:0 0 8px;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;font-weight:600}
-.field{display:flex;gap:6px;margin-bottom:3px}.f-label{font-size:12px;color:var(--text4);min-width:70px}.f-val{font-size:13px;color:var(--text)}
+.field{display:flex;gap:6px;margin-bottom:3px;align-items:center}.f-label{font-size:12px;color:var(--text4);min-width:70px}.f-val{font-size:13px;color:var(--text)}
+.edit-input{padding:4px 8px;border-radius:5px;border:1px solid var(--border2);background:var(--bg);color:var(--white);font-family:'JetBrains Mono',monospace;font-size:12px;width:100%;outline:none}
+.edit-input:focus{border-color:var(--violet)}
+.edit-input.sm{width:80px}
 .totals-box{background:var(--bg3);border-radius:10px;padding:14px 16px;border:1px solid var(--border)}
 .tot-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;color:var(--text2)}
 .notes-box{background:var(--bg3);border-radius:10px;padding:14px 16px;border:1px solid var(--border)}
 .db-bar{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 .db-info{font-size:13px;color:var(--text2)}.db-info strong{color:var(--white)}
 .db-actions{display:flex;gap:8px;flex-wrap:wrap}
+.rot-controls{display:flex;gap:4px;align-items:center}
+.rot-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px}
+.rot-btn:hover{border-color:var(--violet);color:var(--purple)}
+.edit-toolbar{display:flex;gap:6px;padding:12px 20px;background:rgba(124,58,237,0.06);border-bottom:1px solid rgba(124,58,237,0.15);align-items:center;flex-wrap:wrap}
+.edit-toolbar .info{font-size:12px;color:var(--purple);flex:1}
+.item-row-edit{display:grid;grid-template-columns:1fr 60px 80px 80px 30px;gap:6px;align-items:center;margin-bottom:4px}
+.item-row-edit input{padding:5px 8px;border-radius:5px;border:1px solid var(--border2);background:var(--bg);color:var(--white);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none}
+.item-row-edit input:focus{border-color:var(--violet)}
+.item-del{width:26px;height:26px;border-radius:5px;border:1px solid #7f1d1d;background:transparent;color:var(--red);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:800px){.detail-split{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}.stats-bar{flex-direction:column}}
+@media(max-width:800px){.detail-split{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}.stats-bar{flex-direction:column}.item-row-edit{grid-template-columns:1fr 50px 70px 70px 28px}}
 .hidden{display:none!important}
 </style>
 </head>
 <body>
 <header class="header"><div class="header-inner">
-  <div class="brand"><div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></div>
-  <div><div class="h1">Skener Faktúr</div><div class="tagline">PDF + obrázky → Excel / HTML Report</div></div></div>
-  <button class="btn-reset hidden" id="resetBtn" onclick="resetAll()">Nový batch</button>
+<div class="brand"><div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></div>
+<div><div class="h1">Skener Faktúr</div><div class="tagline">AI extrakcia + ručná korekcia → Excel / HTML</div></div></div>
+<button class="btn-reset hidden" id="resetBtn" onclick="resetAll()">Nový batch</button>
 </div></header>
 <main class="main">
-  <div class="api-bar"><label for="apiKey">API kľúč:</label><input type="password" id="apiKey" placeholder="sk-ant-..." oninput="saveKey()"><span class="saved" id="keySaved">✓</span><div class="hint">Kľúč sa ukladá len vo vašom prehliadači. <a href="https://console.anthropic.com/settings/keys" target="_blank">Získať kľúč</a></div></div>
-  <div class="db-bar hidden" id="dbBar"><div class="db-info">Uložené: <strong id="dbCount">0</strong> faktúr</div><div class="db-actions"><button class="btn-excel" onclick="loadAndExcel()">Excel</button><button class="btn-html" onclick="loadAndHtml()">HTML Report</button><button class="btn-reset" onclick="showSaved()">Zobraziť</button><button class="btn-danger" onclick="clearDb()">Vymazať všetko</button></div></div>
-  <div class="drop" id="dropZone" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)" onclick="document.getElementById('fileInput').click()">
-    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/gif,image/webp,application/pdf" multiple style="display:none" onchange="handleFileSelect(this.files)">
-    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#636987" stroke-width="1.2" style="opacity:0.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/><line x1="12" y1="11" x2="12" y2="17"/><polyline points="9 14 12 11 15 14"/></svg>
-    <p class="drop-title">Pretiahnite súbory alebo kliknite</p>
-    <p class="drop-sub">PDF (aj viacstranové), JPEG, PNG, GIF, WebP</p>
-    <div class="badges"><span class="badge">PDF</span><span class="badge">JPG</span><span class="badge">PNG</span><span class="badge ok">Viac dokumentov na stránke ✓</span></div>
-  </div>
-  <div class="panel hidden" id="processPanel"><div class="panel-head"><div><div class="panel-title" id="fileCount"></div><div class="panel-sub" id="fileTypes"></div></div><div style="display:flex;gap:8px"><button class="btn btn-primary" id="startBtn" onclick="processAll()">Spracovať všetko</button><button class="btn btn-stop hidden" id="stopBtn" onclick="stopProcessing()">Zastaviť</button></div></div><div class="prog-wrap hidden" id="progressWrap"><div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div><span class="prog-text" id="progText">0 / 0</span></div><div class="file-list" id="fileList"></div></div>
-  <div class="hidden" id="resultsSection"><div class="stats-bar" id="statsBar"></div><div class="t-wrap"><table id="resultsTable"></table></div><div id="detailPanel"></div></div>
+<div class="api-bar"><label for="apiKey">API kľúč:</label><input type="password" id="apiKey" placeholder="sk-ant-..." oninput="saveKey()"><span class="saved" id="keySaved">✓</span><div class="hint">Kľúč sa ukladá len vo vašom prehliadači. <a href="https://console.anthropic.com/settings/keys" target="_blank">Získať kľúč</a></div></div>
+<div class="db-bar hidden" id="dbBar"><div class="db-info">Uložené: <strong id="dbCount">0</strong> dokladov</div><div class="db-actions"><button class="btn-excel" onclick="loadAndExcel()">Excel</button><button class="btn-html" onclick="loadAndHtml()">HTML Report</button><button class="btn-reset" onclick="showSaved()">Zobraziť</button><button class="btn-danger" onclick="clearDb()">Vymazať všetko</button></div></div>
+<div class="drop" id="dropZone" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)" onclick="document.getElementById('fileInput').click()">
+<input type="file" id="fileInput" accept="image/jpeg,image/png,image/gif,image/webp,application/pdf" multiple style="display:none" onchange="handleFileSelect(this.files)">
+<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#636987" stroke-width="1.2" style="opacity:0.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/><line x1="12" y1="11" x2="12" y2="17"/><polyline points="9 14 12 11 15 14"/></svg>
+<p class="drop-title">Pretiahnite súbory alebo kliknite</p><p class="drop-sub">AI rozozná dáta, vy ich ľahko opravíte</p>
+<div class="badges"><span class="badge">PDF</span><span class="badge">JPG</span><span class="badge">PNG</span><span class="badge ok">Viac dokladov ✓</span><span class="badge ok">Otočené ✓</span><span class="badge ok">Editovateľné ✓</span></div>
+</div>
+<div class="panel hidden" id="processPanel"><div class="panel-head"><div><div class="panel-title" id="fileCount"></div><div class="panel-sub" id="fileTypes"></div></div><div style="display:flex;gap:8px"><button class="btn btn-primary" id="startBtn" onclick="processAll()">Spracovať</button><button class="btn btn-stop hidden" id="stopBtn" onclick="stopProcessing()">Stop</button></div></div><div class="prog-wrap hidden" id="progressWrap"><div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div><span class="prog-text" id="progText">0/0</span></div><div class="file-list" id="fileList"></div></div>
+<div class="hidden" id="resultsSection"><div class="stats-bar" id="statsBar"></div><div class="t-wrap"><table id="resultsTable"></table></div><div id="detailPanel"></div></div>
 </main>
 <script>
-const DB='ScannerDB',ST='invoices';
-function openDb(){return new Promise((ok,no)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=e=>{if(!e.target.result.objectStoreNames.contains(ST))e.target.result.createObjectStore(ST,{keyPath:'id',autoIncrement:true})};r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
-async function dbSave(item){const db=await openDb();return new Promise((ok,no)=>{const tx=db.transaction(ST,'readwrite');tx.objectStore(ST).add(item);tx.oncomplete=()=>{ok();updateDbBar()};tx.onerror=()=>no(tx.error)})}
+// ===== IndexedDB =====
+const DB='ScannerDB',ST='invoices',DBV=2;
+function openDb(){return new Promise((ok,no)=>{const r=indexedDB.open(DB,DBV);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains(ST))db.createObjectStore(ST,{keyPath:'id',autoIncrement:true})};r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
+async function dbSave(item){const db=await openDb();return new Promise((ok,no)=>{const tx=db.transaction(ST,'readwrite');const req=tx.objectStore(ST).add(item);req.onsuccess=()=>{item.id=req.result;ok(item.id)};tx.onerror=()=>no(tx.error)})}
+async function dbUpdate(item){const db=await openDb();return new Promise((ok,no)=>{const tx=db.transaction(ST,'readwrite');tx.objectStore(ST).put(item);tx.oncomplete=()=>ok();tx.onerror=()=>no(tx.error)})}
+async function dbDelete(id){const db=await openDb();return new Promise((ok,no)=>{const tx=db.transaction(ST,'readwrite');tx.objectStore(ST).delete(id);tx.oncomplete=()=>{ok();updateDbBar()};tx.onerror=()=>no(tx.error)})}
 async function dbGetAll(){const db=await openDb();return new Promise((ok,no)=>{const r=db.transaction(ST,'readonly').objectStore(ST).getAll();r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
 async function dbClear(){const db=await openDb();return new Promise((ok,no)=>{const tx=db.transaction(ST,'readwrite');tx.objectStore(ST).clear();tx.oncomplete=()=>{ok();updateDbBar()};tx.onerror=()=>no(tx.error)})}
 async function updateDbBar(){try{const a=await dbGetAll();document.getElementById('dbCount').textContent=a.length;document.getElementById('dbBar').classList.toggle('hidden',!a.length)}catch(e){}}
 
-const PROMPT=`You are a precise receipt and invoice data extractor. Carefully examine the image/document.
+// ===== Prompt =====
+const PROMPT = `You are a precise receipt and invoice data extractor specializing in Slovak and Czech documents.
 
-IMPORTANT: A single image or page may contain MULTIPLE separate receipts, invoices, or documents (e.g. several receipts photographed together, or multiple documents on one scanned page). If you detect multiple separate documents, return a JSON ARRAY with one object per document. If there is only one document, still return a JSON ARRAY with one object. Some documents may be upside down or rotated - read them anyway.
+STEP 1 - ORIENTATION: Determine if image is rotated. Set image_rotation (0/90/180/270).
+STEP 2 - COUNT DOCUMENTS: Each physically separate piece of paper = separate document.  
+STEP 3 - EXTRACT each document INDEPENDENTLY. Do NOT mix data between documents.
 
-Respond ONLY with a valid JSON array (no markdown, no backticks, no preamble):
-[{"vendor":"Business/store name","vendor_address":"Full address if visible","date":"Date in YYYY-MM-DD format","time":"Time if visible, or null","currency":"3-letter currency code","items":[{"description":"Item description","quantity":1,"unit_price":0.00,"total":0.00}],"subtotal":0.00,"tax_rate":"percentage as string or null","tax_amount":0.00,"total":0.00,"payment_method":"cash/card/transfer/unknown","invoice_number":"Invoice or receipt number or null","ico":"IČO or null","dic":"DIČ or null","ic_dph":"IČ DPH or null","iban":"IBAN or null","due_date":"Due date YYYY-MM-DD or null","order_number":"Order number or null","page_count":1,"notes":"Any other relevant info","confidence":"high/medium/low","language":"detected language"}]
+SLOVAK RECEIPT STRUCTURE (bločok/účtenka):
+- HEADER: Store name, address, IČO, DIČ, IČ DPH
+- ITEMS: Product names with prices = ACTUAL PURCHASED GOODS
+- TOTAL: "SPOLU" or "CELKOM" = purchase price
+- PAYMENT (NOT items): "NA ÚHRADU", "HOTOVOSŤ", "VRÁTIŤ", "DOPLATIŤ", "ZAOKRÚHLENIE", "PLATBA KARTOU"
 
-Rules:
-- ALWAYS return a JSON array, even for a single document
-- If multiple documents are visible, create a separate object for each one
-- If two copies of the same receipt are visible, include it only ONCE
-- Multi-page invoices: combine ALL items from ALL pages into one object
-- Use exact numbers shown, do not calculate
-- null for missing fields
-- Detect currency from context
-- Look for Slovak/Czech identifiers (IČO, DIČ, IČ DPH)
-- Look for IBAN, SWIFT/BIC, due dates
-- Documents may be rotated or upside down - extract data regardless of orientation`;
+"PRÍJMOVÝ POKLADNIČNÝ DOKLAD" = handwritten cash receipt:
+- "Prijal od" = payer name, "Spolu EUR" = total, "Účel" = purpose. Read handwritten numbers carefully!
 
-let files=[],results=[],fileErrors=[],aborted=false,selectedIdx=null;
-const isPDF=f=>f.type==='application/pdf';const isImage=f=>['image/jpeg','image/png','image/gif','image/webp'].includes(f.type);const isValid=f=>isPDF(f)||isImage(f);
-const fmt=n=>n!=null?n.toLocaleString('sk-SK',{minimumFractionDigits:2}):'—';
-const field=(l,v)=>v!=null&&v!==''?'<div class="field"><span class="f-label">'+l+'</span><span class="f-val">'+v+'</span></div>':'';
-function saveKey(){const k=document.getElementById('apiKey').value;if(k)try{localStorage.setItem('anthropic_key',k)}catch(e){}const s=document.getElementById('keySaved');s.style.display='inline';setTimeout(function(){s.style.display='none'},1500)}
+✅ Items = actual products/services purchased
+❌ NOT items: HOTOVOSŤ, VRÁTIŤ, NA ÚHRADU, DOPLATIŤ, ZAOKRÚHLENIE, bank names, addresses
+
+Return ONLY a JSON array:
+[{"document_index":1,"image_rotation":0,"vendor":"name","vendor_address":"addr","date":"YYYY-MM-DD","time":"HH:MM or null","currency":"EUR","items":[{"description":"product","quantity":1,"unit_price":0.00,"total":0.00}],"subtotal":0.00,"tax_rate":"20% or null","tax_amount":0.00,"total":0.00,"payment_method":"cash/card/transfer","invoice_number":"or null","ico":"or null","dic":"or null","ic_dph":"or null","iban":"or null","due_date":"or null","order_number":"or null","receipt_number":"or null","notes":"payment details, rounding","confidence":"high/medium/low","language":"Slovak"}]
+
+Rules: ALWAYS array. total = purchase amount NOT cash tendered. Each paper = separate object. No markdown.`;
+
+// ===== State =====
+let files=[],results=[],fileErrors=[],aborted=false,selectedIdx=null,editMode=false;
+const isPDF=f=>f.type==='application/pdf',isImage=f=>['image/jpeg','image/png','image/gif','image/webp'].includes(f.type),isValid=f=>isPDF(f)||isImage(f);
+const fmt=n=>n!=null?Number(n).toLocaleString('sk-SK',{minimumFractionDigits:2}):'—';
+const field=(l,v)=>v!=null&&v!==''?`<div class="field"><span class="f-label">${l}</span><span class="f-val">${v}</span></div>`:'';
+const eField=(l,key,val,cls)=>`<div class="field"><span class="f-label">${l}</span><input class="edit-input ${cls||''}" data-key="${key}" value="${val!=null?val:''}" /></div>`;
+
+function saveKey(){const k=document.getElementById('apiKey').value;if(k)try{localStorage.setItem('anthropic_key',k)}catch(e){}const s=document.getElementById('keySaved');s.style.display='inline';setTimeout(()=>s.style.display='none',1500)}
 try{const s=localStorage.getItem('anthropic_key');if(s)document.getElementById('apiKey').value=s}catch(e){}
-function fileToBase64(file){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result)};r.onerror=function(){rej(new Error('Read failed'))};r.readAsDataURL(file)})}
-function handleDrop(e){e.preventDefault();e.currentTarget.classList.remove('over');var items=e.dataTransfer.items;if(items){var p=[];for(var i=0;i<items.length;i++){var entry=items[i].webkitGetAsEntry&&items[i].webkitGetAsEntry();if(entry)p.push(traverseEntry(entry));else if(items[i].kind==='file'){var f=items[i].getAsFile();if(f)p.push(Promise.resolve([f]))}}Promise.all(p).then(function(a){handleFileSelect(a.flat())})}else handleFileSelect(e.dataTransfer.files)}
-function traverseEntry(entry){return new Promise(function(resolve){if(entry.isFile)entry.file(function(f){resolve([f])});else if(entry.isDirectory){var reader=entry.createReader();var all=[];var read=function(){reader.readEntries(function(entries){if(!entries.length)Promise.all(all.map(traverseEntry)).then(function(r){resolve(r.flat())});else{all.push.apply(all,entries);read()}})};read()}else resolve([])})}
-function handleFileSelect(fileList){var valid=Array.from(fileList).filter(isValid);if(!valid.length)return;valid.sort(function(a,b){return a.name.localeCompare(b.name)});files=valid;results=[];fileErrors=[];selectedIdx=null;
-document.getElementById('dropZone').classList.add('hidden');document.getElementById('processPanel').classList.remove('hidden');document.getElementById('resetBtn').classList.remove('hidden');document.getElementById('resultsSection').classList.add('hidden');
-var pc=files.filter(isPDF).length,ic=files.filter(isImage).length;
-document.getElementById('fileCount').textContent=files.length+' '+(files.length===1?'súbor':files.length<5?'súbory':'súborov');
-document.getElementById('fileTypes').textContent=[pc&&pc+' PDF',ic&&ic+' obrázkov'].filter(Boolean).join(' · ');renderFileList()}
-function renderFileList(){document.getElementById('fileList').innerHTML=files.map(function(f,i){
-var fileResults=results.filter(function(r){return r._sourceFile===f.name});var done=fileResults.length>0;var err=fileErrors.some(function(e){return e.file===f.name});
-var cls=(done?'done ':'')+(err?'err':'');
-var icon=isPDF(f)?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
-var multiBadge=fileResults.length>1?'<span class="multi-badge">'+fileResults.length+' dok.</span>':'';
-var status=done?'<span class="check">✓</span>':err?'<span class="err-mark">✗</span>':'';
-return'<div class="file-row '+cls+'" id="frow-'+i+'">'+icon+'<span class="file-name">'+f.name+'</span>'+multiBadge+'<span class="file-size">'+(f.size/1024).toFixed(0)+' KB</span>'+status+'</div>'}).join('')}
+function fileToBase64(f){return new Promise((r,e)=>{const rd=new FileReader();rd.onload=()=>r(rd.result);rd.onerror=()=>e(new Error('Read failed'));rd.readAsDataURL(f)})}
 
-async function processAll(){var key=document.getElementById('apiKey').value.trim();if(!key){alert('Prosím zadajte Anthropic API kľúč.');return}
-aborted=false;results=[];fileErrors=[];document.getElementById('startBtn').classList.add('hidden');document.getElementById('stopBtn').classList.remove('hidden');document.getElementById('progressWrap').classList.remove('hidden');document.getElementById('resultsSection').classList.add('hidden');
-for(var i=0;i<files.length;i++){if(aborted)break;var row=document.getElementById('frow-'+i);if(row){row.classList.add('active');row.innerHTML=row.innerHTML.replace(/<\/div>$/,'<span class="spinner"></span></div>')}updateProgress();
-try{var dataUrl=await fileToBase64(files[i]);var base64=dataUrl.split(',')[1];
-var content=isPDF(files[i])?[{type:'document',source:{type:'base64',media_type:'application/pdf',data:base64}},{type:'text',text:PROMPT}]:[{type:'image',source:{type:'base64',media_type:files[i].type,data:base64}},{type:'text',text:PROMPT}];
-var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:content}]})});
-var data=await resp.json();if(data.error)throw new Error(data.error.message);
-var text=data.content.map(function(c){return c.type==='text'?c.text:''}).filter(Boolean).join('\n');
-var clean=text.replace(/```json|```/g,'').trim();
-var parsed=JSON.parse(clean);
+// ===== File handling =====
+function handleDrop(e){e.preventDefault();e.currentTarget.classList.remove('over');const items=e.dataTransfer.items;if(items){const p=[];for(let i=0;i<items.length;i++){const entry=items[i].webkitGetAsEntry?.();if(entry)p.push(traverseEntry(entry));else{const f=items[i].getAsFile();if(f)p.push(Promise.resolve([f]))}}Promise.all(p).then(a=>handleFileSelect(a.flat()))}else handleFileSelect(e.dataTransfer.files)}
+function traverseEntry(entry){return new Promise(resolve=>{if(entry.isFile)entry.file(f=>resolve([f]));else if(entry.isDirectory){const reader=entry.createReader(),all=[];const read=()=>reader.readEntries(entries=>{if(!entries.length)Promise.all(all.map(traverseEntry)).then(r=>resolve(r.flat()));else{all.push(...entries);read()}});read()}else resolve([])})}
+function handleFileSelect(fl){const v=Array.from(fl).filter(isValid);if(!v.length)return;v.sort((a,b)=>a.name.localeCompare(b.name));files=v;results=[];fileErrors=[];selectedIdx=null;editMode=false;
+$('dropZone').classList.add('hidden');$('processPanel').classList.remove('hidden');$('resetBtn').classList.remove('hidden');$('resultsSection').classList.add('hidden');
+$('fileCount').textContent=`${files.length} ${files.length===1?'súbor':files.length<5?'súbory':'súborov'}`;
+$('fileTypes').textContent=[files.filter(isPDF).length&&files.filter(isPDF).length+' PDF',files.filter(isImage).length&&files.filter(isImage).length+' obrázkov'].filter(Boolean).join(' · ');renderFileList()}
+function renderFileList(){$('fileList').innerHTML=files.map((f,i)=>{const done=results.some(r=>r._filename===f.name);const err=fileErrors.some(e=>e.file===f.name);
+return`<div class="file-row ${done?'done':''} ${err?'err':''}" id="frow-${i}">${isPDF(f)?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'}<span class="file-name">${f.name}</span><span class="file-size">${(f.size/1024).toFixed(0)} KB</span>${done?'<span class="check">✓</span>':err?'<span class="err-mark">✗</span>':''}</div>`}).join('')}
+
+// ===== Processing =====
+async function processAll(){const key=$('apiKey').value.trim();if(!key){alert('Zadajte API kľúč.');return}
+aborted=false;results=[];fileErrors=[];$('startBtn').classList.add('hidden');$('stopBtn').classList.remove('hidden');$('progressWrap').classList.remove('hidden');$('resultsSection').classList.add('hidden');
+for(let i=0;i<files.length;i++){if(aborted)break;const row=$('frow-'+i);if(row){row.classList.add('active');row.innerHTML=row.innerHTML.replace(/<\/div>$/,'<span class="spinner"></span></div>')}updProg();
+try{const du=await fileToBase64(files[i]);const b=du.split(',')[1];
+const ct=isPDF(files[i])?[{type:'document',source:{type:'base64',media_type:'application/pdf',data:b}},{type:'text',text:PROMPT}]:[{type:'image',source:{type:'base64',media_type:files[i].type,data:b}},{type:'text',text:PROMPT}];
+const rsp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:ct}]})});
+const data=await rsp.json();if(data.error)throw new Error(data.error.message);
+const txt=data.content.map(c=>c.type==='text'?c.text:'').filter(Boolean).join('\n');
+let parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());
 if(!Array.isArray(parsed))parsed=[parsed];
-var count=parsed.length;
-for(var j=0;j<parsed.length;j++){var doc=parsed[j];
-doc._sourceFile=files[i].name;doc._filename=count>1?files[i].name+' ['+(j+1)+'/'+count+']':files[i].name;
-doc._fileType=isPDF(files[i])?'PDF':'Image';doc._originalDataUrl=dataUrl;doc._originalMediaType=files[i].type;
-doc._timestamp=new Date().toISOString();doc._multiDoc=count>1;doc._docIndex=j+1;doc._docTotal=count;
-results.push(doc);try{await dbSave(Object.assign({},doc))}catch(e){}}}
-catch(err){fileErrors.push({file:files[i].name,error:err.message})}
-renderFileList();updateProgress();if(i<files.length-1)await new Promise(function(r){setTimeout(r,600)})}
-document.getElementById('stopBtn').classList.add('hidden');showResults();updateDbBar()}
-
+const rot=parsed[0]?.image_rotation||0;
+for(let di=0;di<parsed.length;di++){const doc=parsed[di];doc._filename=files[i].name;doc._fileType=isPDF(files[i])?'PDF':'Image';doc._originalDataUrl=du;doc._originalMediaType=files[i].type;doc._timestamp=new Date().toISOString();doc._rotation=rot;doc._docIndex=di+1;doc._docsInFile=parsed.length;doc._displayName=parsed.length>1?`${files[i].name} [${di+1}/${parsed.length}]`:files[i].name;
+const newId=await dbSave({...doc});doc.id=newId;results.push(doc)}
+}catch(err){fileErrors.push({file:files[i].name,error:err.message})}
+renderFileList();updProg();if(i<files.length-1)await new Promise(r=>setTimeout(r,800))}
+$('stopBtn').classList.add('hidden');showResults();updateDbBar()}
 function stopProcessing(){aborted=true}
-function updateProgress(){var filesDone=new Set(results.map(function(r){return r._sourceFile})).size+fileErrors.length;var p=files.length?Math.round((filesDone/files.length)*100):0;document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=filesDone+' / '+files.length+' súborov · '+results.length+' dok.'}
-async function showSaved(){try{var all=await dbGetAll();if(!all.length){alert('Žiadne uložené faktúry.');return}results=all;fileErrors=[];document.getElementById('dropZone').classList.add('hidden');document.getElementById('processPanel').classList.add('hidden');document.getElementById('resetBtn').classList.remove('hidden');showResults()}catch(e){alert('Chyba: '+e.message)}}
-async function clearDb(){if(!confirm('Naozaj vymazať všetky uložené faktúry?'))return;await dbClear();results=[];document.getElementById('resultsSection').classList.add('hidden')}
-async function loadAndExcel(){var all=await dbGetAll();if(!all.length){alert('Žiadne dáta.');return}results=all;generateExcel()}
-async function loadAndHtml(){var all=await dbGetAll();if(!all.length){alert('Žiadne dáta.');return}results=all;generateHtmlReport()}
+function updProg(){const c=results.length+fileErrors.length;const p=files.length?Math.round(c/files.length*100):0;$('progFill').style.width=p+'%';$('progText').textContent=`${c}/${files.length}`}
 
-function showResults(){if(!results.length)return;document.getElementById('resultsSection').classList.remove('hidden');selectedIdx=null;
-var ts=results.reduce(function(s,r){return s+(r.total||0)},0);var cur=[...new Set(results.map(function(r){return r.currency}).filter(Boolean))];var ti=results.reduce(function(s,r){return s+(r.items?r.items.length:0)},0);
-var srcFiles=new Set(results.map(function(r){return r._sourceFile})).size;
-var td=cur.length<=1?fmt(ts)+' '+(cur[0]||''):cur.map(function(c){return fmt(results.filter(function(r){return r.currency===c}).reduce(function(s,r){return s+(r.total||0)},0))+' '+c}).join(' · ');
-document.getElementById('statsBar').innerHTML='<div class="stat"><span class="stat-v">'+srcFiles+'</span><span class="stat-l">Súborov</span></div><div class="stat"><span class="stat-v">'+results.length+'</span><span class="stat-l">Dokumentov</span></div>'+(fileErrors.length?'<div class="stat" style="border-color:#7f1d1d"><span class="stat-v" style="color:var(--red)">'+fileErrors.length+'</span><span class="stat-l">Chyby</span></div>':'')+'<div class="stat"><span class="stat-v">'+ti+'</span><span class="stat-l">Položiek</span></div><div class="stat" style="flex:1.5"><span class="stat-v" style="color:var(--purple)">'+td+'</span><span class="stat-l">Celkom</span></div><button class="btn-excel" onclick="generateExcel()">Excel</button><button class="btn-html" onclick="generateHtmlReport()">HTML Report</button>';
-var h='<thead><tr><th>Súbor</th><th>Typ</th><th>Dodávateľ</th><th>Dátum</th><th>Č. faktúry</th><th style="text-align:right">Celkom</th><th>Mena</th><th style="text-align:center">Pol.</th><th></th></tr></thead><tbody>';
-results.forEach(function(r,i){var bc=r._fileType==='PDF'?'t-pdf':'t-img';var pg=(r.page_count||1)>1?' '+r.page_count+'p':'';
-var multiTag=r._multiDoc?' <span class="t-badge t-multi">'+r._docIndex+'/'+r._docTotal+'</span>':'';
-h+='<tr class="clickable'+(i%2?' alt':'')+'" onclick="toggleDetail('+i+')"><td><span class="mono">'+r._filename+'</span></td><td><span class="t-badge '+bc+'">'+r._fileType+pg+'</span>'+multiTag+'</td><td>'+(r.vendor||'—')+'</td><td class="mono">'+(r.date||'—')+'</td><td class="mono">'+(r.invoice_number||'—')+'</td><td style="text-align:right" class="mono"><b>'+fmt(r.total)+'</b></td><td>'+(r.currency||'—')+'</td><td style="text-align:center">'+(r.items?r.items.length:0)+'</td><td style="text-align:center;color:var(--text3)" id="arrow-'+i+'">▼</td></tr>'});
-h+='</tbody>';document.getElementById('resultsTable').innerHTML=h;document.getElementById('detailPanel').innerHTML=''}
+async function showSaved(){try{const all=await dbGetAll();if(!all.length){alert('Žiadne uložené doklady.');return}results=all;fileErrors=[];$('dropZone').classList.add('hidden');$('processPanel').classList.add('hidden');$('resetBtn').classList.remove('hidden');showResults()}catch(e){alert('Chyba: '+e.message)}}
+async function clearDb(){if(!confirm('Vymazať všetky uložené doklady?'))return;await dbClear();results=[];$('resultsSection').classList.add('hidden')}
+async function loadAndExcel(){results=await dbGetAll();if(!results.length)return alert('Žiadne dáta.');generateExcel()}
+async function loadAndHtml(){results=await dbGetAll();if(!results.length)return alert('Žiadne dáta.');generateHtmlReport()}
 
-function toggleDetail(idx){var panel=document.getElementById('detailPanel');if(selectedIdx===idx){selectedIdx=null;panel.innerHTML='';document.getElementById('arrow-'+idx).textContent='▼';return}
-if(selectedIdx!==null)document.getElementById('arrow-'+selectedIdx).textContent='▼';selectedIdx=idx;document.getElementById('arrow-'+idx).textContent='▲';
-var d=results[idx];var cc={high:'var(--green)',medium:'var(--yellow)',low:'var(--red)'};
-var orig='<div style="padding:40px;text-align:center;color:var(--text4)">Originál nie je dostupný</div>';
-if(d._originalDataUrl){if(d._originalMediaType==='application/pdf')orig='<iframe src="'+d._originalDataUrl+'" style="width:100%;height:100%;min-height:550px;border:none"></iframe>';else orig='<img src="'+d._originalDataUrl+'" style="max-width:100%;height:auto">'}
-var items='';if(d.items&&d.items.length){items='<div style="margin-top:16px"><h4 class="dh4">Položky ('+d.items.length+')</h4><div style="border-radius:8px;border:1px solid var(--border);overflow:auto"><table><thead><tr><th style="padding:8px 12px">Popis</th><th style="padding:8px 12px;text-align:right">Mn.</th><th style="padding:8px 12px;text-align:right">Jedn.</th><th style="padding:8px 12px;text-align:right">Spolu</th></tr></thead><tbody>'+d.items.map(function(it){return'<tr><td style="padding:7px 12px">'+it.description+'</td><td style="padding:7px 12px;text-align:right" class="mono">'+it.quantity+'</td><td style="padding:7px 12px;text-align:right" class="mono">'+fmt(it.unit_price)+'</td><td style="padding:7px 12px;text-align:right;font-weight:600" class="mono">'+fmt(it.total)+'</td></tr>'}).join('')+'</tbody></table></div></div>'}
-var multiNote=d._multiDoc?'<div style="margin-bottom:12px;padding:8px 12px;border-radius:8px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.15);font-size:12px;color:var(--purple)">Dokument '+d._docIndex+' z '+d._docTotal+' nájdených v súbore '+(d._sourceFile||'')+'</div>':'';
-panel.innerHTML='<div class="detail"><div class="detail-split"><div class="detail-original"><div class="detail-original-head"><span class="dh4" style="margin:0">Originál</span><span class="mono" style="color:var(--text4)">'+(d._sourceFile||d._filename)+'</span></div><div class="detail-original-body">'+orig+'</div></div><div class="detail-data">'+multiNote+'<div class="detail-grid"><div><h4 class="dh4">Dodávateľ</h4>'+field('Názov',d.vendor)+field('Adresa',d.vendor_address)+field('IČO',d.ico)+field('DIČ',d.dic)+field('IČ DPH',d.ic_dph)+field('IBAN',d.iban)+'</div><div><h4 class="dh4">Dokument</h4>'+field('Dátum',d.date)+field('Splatnosť',d.due_date)+field('Č. faktúry',d.invoice_number)+field('Obj. číslo',d.order_number)+field('Platba',d.payment_method)+field('Strany',d.page_count)+field('Jazyk',d.language)+'<div class="field"><span class="f-label">Spoľahlivosť</span><span style="width:8px;height:8px;border-radius:50%;background:'+(cc[d.confidence]||'#666')+';display:inline-block"></span><span class="f-val">'+(d.confidence||'')+'</span></div></div></div>'+items+'<div class="detail-grid" style="margin-top:12px"><div class="totals-box"><div class="tot-row"><span>Základ</span><span class="mono">'+fmt(d.subtotal)+'</span></div>'+(d.tax_rate?'<div class="tot-row"><span>DPH ('+d.tax_rate+')</span><span class="mono">'+fmt(d.tax_amount)+'</span></div>':'')+'<div class="tot-row" style="border-top:2px solid var(--border2);padding-top:8px;margin-top:4px;font-weight:700;color:var(--white)"><span>Celkom ('+(d.currency||'?')+')</span><span class="mono" style="color:var(--purple);font-size:16px">'+fmt(d.total)+'</span></div></div>'+(d.notes?'<div class="notes-box"><h4 class="dh4">Poznámky</h4><p style="font-size:13px;color:var(--text2);line-height:1.5">'+d.notes+'</p></div>':'<div></div>')+'</div></div></div></div>'}
+// ===== Results =====
+function showResults(){if(!results.length)return;$('resultsSection').classList.remove('hidden');selectedIdx=null;editMode=false;
+const ts=results.reduce((s,r)=>s+(r.total||0),0);const cur=[...new Set(results.map(r=>r.currency).filter(Boolean))];const ti=results.reduce((s,r)=>s+(r.items?.length||0),0);
+const td=cur.length<=1?`${fmt(ts)} ${cur[0]||''}`:cur.map(c=>`${fmt(results.filter(r=>r.currency===c).reduce((s,r)=>s+(r.total||0),0))} ${c}`).join(' · ');
+$('statsBar').innerHTML=`<div class="stat"><span class="stat-v">${[...new Set(results.map(r=>r._filename))].length}</span><span class="stat-l">Súborov</span></div><div class="stat"><span class="stat-v">${results.length}</span><span class="stat-l">Dokladov</span></div>${fileErrors.length?`<div class="stat" style="border-color:#7f1d1d"><span class="stat-v" style="color:var(--red)">${fileErrors.length}</span><span class="stat-l">Chyby</span></div>`:''}<div class="stat"><span class="stat-v">${ti}</span><span class="stat-l">Položiek</span></div><div class="stat" style="flex:1.5"><span class="stat-v" style="color:var(--purple)">${td}</span><span class="stat-l">Celkom</span></div><button class="btn-excel" onclick="generateExcel()">Excel</button><button class="btn-html" onclick="generateHtmlReport()">HTML Report</button>`;
+renderTable()}
 
-function generateExcel(){if(!results.length)return;var wb=XLSX.utils.book_new();
-var s=results.map(function(r){return{'Zdrojový súbor':r._sourceFile||r._filename,'Dok.':r._multiDoc?r._docIndex+'/'+r._docTotal:'1/1','Typ':r._fileType,'Dodávateľ':r.vendor||'','Dátum':r.date||'','Splatnosť':r.due_date||'','Č. faktúry':r.invoice_number||'','IČO':r.ico||'','DIČ':r.dic||'','IČ DPH':r.ic_dph||'','IBAN':r.iban||'','Mena':r.currency||'','Základ':r.subtotal==null?'':r.subtotal,'DPH':r.tax_rate||'','DPH suma':r.tax_amount==null?'':r.tax_amount,'Celkom':r.total==null?'':r.total,'Platba':r.payment_method||'','Adresa':r.vendor_address||'','Poznámky':r.notes||''}});
-var ws1=XLSX.utils.json_to_sheet(s);XLSX.utils.book_append_sheet(wb,ws1,'Prehľad');
-var it=[];results.forEach(function(r){(r.items||[]).forEach(function(i){it.push({'Súbor':r._filename,'Dodávateľ':r.vendor||'','Dátum':r.date||'','Č. faktúry':r.invoice_number||'','Položka':i.description||'','Množstvo':i.quantity==null?'':i.quantity,'Jedn. cena':i.unit_price==null?'':i.unit_price,'Spolu':i.total==null?'':i.total,'Mena':r.currency||''})})});
+function renderTable(){
+let h='<thead><tr><th>Súbor</th><th>Dodávateľ</th><th>Dátum</th><th>Č. dokladu</th><th style="text-align:right">Celkom</th><th>Mena</th><th style="text-align:center">Pol.</th><th></th></tr></thead><tbody>';
+results.forEach((r,i)=>{h+=`<tr class="clickable${i%2?' alt':''}" onclick="toggleDetail(${i})"><td><span class="mono">${r._displayName||r._filename||'—'}</span></td><td>${r.vendor||'—'}</td><td class="mono">${r.date||'—'}</td><td class="mono">${r.invoice_number||r.receipt_number||'—'}</td><td style="text-align:right" class="mono"><b>${fmt(r.total)}</b></td><td>${r.currency||'—'}</td><td style="text-align:center">${r.items?.length||0}</td><td style="text-align:center;color:var(--text3)" id="arrow-${i}">▼</td></tr>`});
+h+='</tbody>';$('resultsTable').innerHTML=h;$('detailPanel').innerHTML=''}
+
+function toggleDetail(idx){const panel=$('detailPanel');if(selectedIdx===idx&&!editMode){selectedIdx=null;panel.innerHTML='';$('arrow-'+idx).textContent='▼';return}
+if(selectedIdx!==null&&selectedIdx!==idx)$('arrow-'+selectedIdx).textContent='▼';selectedIdx=idx;$('arrow-'+idx).textContent='▲';editMode=false;renderDetail(idx)}
+
+function renderDetail(idx){
+const d=results[idx];const cc={high:'var(--green)',medium:'var(--yellow)',low:'var(--red)'};const rot=d._rotation||0;const isP=d._originalMediaType==='application/pdf';
+let orig='<div style="padding:40px;text-align:center;color:var(--text4)">Originál nie je dostupný</div>';
+if(d._originalDataUrl){if(isP)orig=`<iframe src="${d._originalDataUrl}"></iframe>`;else orig=`<img id="orig-img-${idx}" src="${d._originalDataUrl}" style="transform:rotate(${rot}deg)">`}
+const rotC=!isP&&d._originalDataUrl?`<div class="rot-controls"><button class="rot-btn" onclick="event.stopPropagation();rotImg(${idx},-90)">↶</button><button class="rot-btn" onclick="event.stopPropagation();rotImg(${idx},90)">↷</button><button class="rot-btn" onclick="event.stopPropagation();rotImg(${idx},180)">⇅</button></div>`:'';
+let items='';if(d.items?.length){items=`<div style="margin-top:16px"><h4 class="dh4">Položky (${d.items.length})</h4><div style="border-radius:8px;border:1px solid var(--border);overflow:auto"><table><thead><tr><th style="padding:8px 12px">Popis</th><th style="padding:8px 12px;text-align:right">Mn.</th><th style="padding:8px 12px;text-align:right">Jedn.</th><th style="padding:8px 12px;text-align:right">Spolu</th></tr></thead><tbody>${d.items.map(it=>`<tr><td style="padding:7px 12px">${it.description}</td><td style="padding:7px 12px;text-align:right" class="mono">${it.quantity}</td><td style="padding:7px 12px;text-align:right" class="mono">${fmt(it.unit_price)}</td><td style="padding:7px 12px;text-align:right;font-weight:600" class="mono">${fmt(it.total)}</td></tr>`).join('')}</tbody></table></div></div>`}
+const multi=(d._docsInFile||1)>1?`<div style="background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--purple)">Doklad ${d._docIndex} z ${d._docsInFile} v súbore ${d._filename}</div>`:'';
+
+$('detailPanel').innerHTML=`<div class="detail">
+<div class="edit-toolbar"><span class="info">Kliknite Upraviť pre korekciu AI extrakcie</span><button class="btn-edit" onclick="startEdit(${idx})">✏️ Upraviť</button><button class="btn-del" onclick="deleteInvoice(${idx})">🗑 Zmazať</button></div>
+<div class="detail-split"><div class="detail-original"><div class="detail-original-head"><span class="dh4" style="margin:0">Originál</span>${rotC}<span class="mono" style="color:var(--text4)">${d._displayName||d._filename}</span></div><div class="detail-original-body">${orig}</div></div>
+<div class="detail-data">${multi}<div class="detail-grid"><div><h4 class="dh4">Dodávateľ</h4>${field('Názov',d.vendor)}${field('Adresa',d.vendor_address)}${field('IČO',d.ico)}${field('DIČ',d.dic)}${field('IČ DPH',d.ic_dph)}${field('IBAN',d.iban)}</div>
+<div><h4 class="dh4">Dokument</h4>${field('Dátum',d.date)}${field('Splatnosť',d.due_date)}${field('Č. dokladu',d.invoice_number)}${field('Č. účtenky',d.receipt_number)}${field('Obj. číslo',d.order_number)}${field('Platba',d.payment_method)}${field('Spoľahlivosť',d.confidence)}</div></div>
+${items}
+<div class="detail-grid" style="margin-top:12px"><div class="totals-box"><div class="tot-row"><span>Základ</span><span class="mono">${fmt(d.subtotal)}</span></div>${d.tax_rate?`<div class="tot-row"><span>DPH (${d.tax_rate})</span><span class="mono">${fmt(d.tax_amount)}</span></div>`:''}<div class="tot-row" style="border-top:2px solid var(--border2);padding-top:8px;margin-top:4px;font-weight:700;color:var(--white)"><span>Celkom (${d.currency||'?'})</span><span class="mono" style="color:var(--purple);font-size:16px">${fmt(d.total)}</span></div></div>
+${d.notes?`<div class="notes-box"><h4 class="dh4">Poznámky</h4><p style="font-size:13px;color:var(--text2);line-height:1.5">${d.notes}</p></div>`:'<div></div>'}</div></div></div></div>`}
+
+// ===== Edit Mode =====
+function startEdit(idx){
+editMode=true;const d=results[idx];const rot=d._rotation||0;const isP=d._originalMediaType==='application/pdf';
+let orig='<div style="padding:40px;text-align:center;color:var(--text4)">—</div>';
+if(d._originalDataUrl){if(isP)orig=`<iframe src="${d._originalDataUrl}"></iframe>`;else orig=`<img id="orig-img-${idx}" src="${d._originalDataUrl}" style="transform:rotate(${rot}deg)">`}
+const rotC=!isP&&d._originalDataUrl?`<div class="rot-controls"><button class="rot-btn" onclick="event.stopPropagation();rotImg(${idx},-90)">↶</button><button class="rot-btn" onclick="event.stopPropagation();rotImg(${idx},90)">↷</button><button class="rot-btn" onclick="event.stopPropagation();rotImg(${idx},180)">⇅</button></div>`:'';
+
+let itemsEdit='';if(d.items){itemsEdit=d.items.map((it,ii)=>`<div class="item-row-edit" data-item="${ii}"><input data-f="description" value="${it.description||''}"><input data-f="quantity" value="${it.quantity||1}" style="text-align:right"><input data-f="unit_price" value="${it.unit_price||0}" style="text-align:right"><input data-f="total" value="${it.total||0}" style="text-align:right"><button class="item-del" onclick="removeItem(${ii})">×</button></div>`).join('')}
+
+$('detailPanel').innerHTML=`<div class="detail">
+<div class="edit-toolbar"><span class="info">✏️ Režim úprav — opravte čo AI neprečítalo správne</span><button class="btn-sm btn-save" onclick="saveEdit(${idx})">💾 Uložiť</button><button class="btn-sm btn-cancel" onclick="renderDetail(${idx});editMode=false">Zrušiť</button></div>
+<div class="detail-split"><div class="detail-original"><div class="detail-original-head"><span class="dh4" style="margin:0">Originál</span>${rotC}</div><div class="detail-original-body">${orig}</div></div>
+<div class="detail-data" id="editForm">
+<div class="detail-grid"><div><h4 class="dh4">Dodávateľ</h4>${eField('Názov','vendor',d.vendor)}${eField('Adresa','vendor_address',d.vendor_address)}${eField('IČO','ico',d.ico)}${eField('DIČ','dic',d.dic)}${eField('IČ DPH','ic_dph',d.ic_dph)}${eField('IBAN','iban',d.iban)}</div>
+<div><h4 class="dh4">Dokument</h4>${eField('Dátum','date',d.date)}${eField('Splatnosť','due_date',d.due_date)}${eField('Č. dokladu','invoice_number',d.invoice_number)}${eField('Č. účtenky','receipt_number',d.receipt_number)}${eField('Platba','payment_method',d.payment_method)}${eField('Mena','currency',d.currency)}</div></div>
+<div style="margin-top:16px"><h4 class="dh4">Položky</h4>
+<div style="display:grid;grid-template-columns:1fr 60px 80px 80px 30px;gap:6px;margin-bottom:4px;font-size:10px;color:var(--text4);text-transform:uppercase"><span>Popis</span><span style="text-align:right">Mn.</span><span style="text-align:right">Jedn.</span><span style="text-align:right">Spolu</span><span></span></div>
+<div id="itemsContainer">${itemsEdit}</div>
+<button class="btn-add" onclick="addItem()">+ Pridať položku</button></div>
+<div class="detail-grid" style="margin-top:16px"><div><h4 class="dh4">Sumy</h4>${eField('Základ','subtotal',d.subtotal,'sm')}${eField('DPH sadzba','tax_rate',d.tax_rate,'sm')}${eField('DPH suma','tax_amount',d.tax_amount,'sm')}${eField('Celkom','total',d.total,'sm')}</div>
+<div><h4 class="dh4">Poznámky</h4><textarea data-key="notes" class="edit-input" style="height:100px;resize:vertical">${d.notes||''}</textarea></div></div>
+</div></div></div>`}
+
+function addItem(){const c=$('itemsContainer');const n=c.children.length;
+c.insertAdjacentHTML('beforeend',`<div class="item-row-edit" data-item="${n}"><input data-f="description" value="" placeholder="Popis"><input data-f="quantity" value="1" style="text-align:right"><input data-f="unit_price" value="0" style="text-align:right"><input data-f="total" value="0" style="text-align:right"><button class="item-del" onclick="this.parentElement.remove()">×</button></div>`)}
+function removeItem(ii){const rows=document.querySelectorAll('.item-row-edit');if(rows[ii])rows[ii].remove()}
+
+async function saveEdit(idx){
+const d=results[idx];const form=$('editForm');
+// Read simple fields
+form.querySelectorAll('.edit-input[data-key]').forEach(inp=>{const k=inp.dataset.key,v=inp.value.trim();
+if(['subtotal','tax_amount','total'].includes(k))d[k]=v?parseFloat(v.replace(',','.')):null;
+else d[k]=v||null});
+// Read textarea
+const ta=form.querySelector('textarea[data-key]');if(ta)d[ta.dataset.key]=ta.value.trim()||null;
+// Read items
+const items=[];document.querySelectorAll('.item-row-edit').forEach(row=>{const desc=row.querySelector('[data-f="description"]')?.value?.trim();
+if(!desc)return;items.push({description:desc,quantity:parseFloat(row.querySelector('[data-f="quantity"]')?.value)||1,unit_price:parseFloat(row.querySelector('[data-f="unit_price"]')?.value?.replace(',','.'))||0,total:parseFloat(row.querySelector('[data-f="total"]')?.value?.replace(',','.'))||0})});
+d.items=items;d.confidence='edited';
+try{if(d.id)await dbUpdate({...d})}catch(e){console.warn('DB update failed',e)}
+editMode=false;renderDetail(idx);showResults()}
+
+async function deleteInvoice(idx){if(!confirm('Zmazať tento doklad?'))return;
+const d=results[idx];if(d.id)try{await dbDelete(d.id)}catch(e){}
+results.splice(idx,1);selectedIdx=null;$('detailPanel').innerHTML='';showResults();updateDbBar()}
+
+function rotImg(idx,deg){const d=results[idx];d._rotation=((d._rotation||0)+deg+360)%360;if(d.id)dbUpdate({...d}).catch(()=>{});const img=$('orig-img-'+idx);if(img)img.style.transform='rotate('+d._rotation+'deg)'}
+
+// ===== Excel =====
+function generateExcel(){if(!results.length)return;const wb=XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(results.map(r=>({'Súbor':r._displayName||r._filename,'Dodávateľ':r.vendor||'','Dátum':r.date||'','Č. dokladu':r.invoice_number||'','Č. účtenky':r.receipt_number||'','IČO':r.ico||'','DIČ':r.dic||'','IČ DPH':r.ic_dph||'','IBAN':r.iban||'','Mena':r.currency||'','Základ':r.subtotal??'','DPH':r.tax_rate||'','DPH suma':r.tax_amount??'','Celkom':r.total??'','Platba':r.payment_method||'','Adresa':r.vendor_address||'','Poznámky':r.notes||''}))),'Prehľad');
+const it=[];results.forEach(r=>(r.items||[]).forEach(i=>it.push({'Súbor':r._displayName||r._filename,'Dodávateľ':r.vendor||'','Dátum':r.date||'','Položka':i.description||'','Mn.':i.quantity??'','Jedn.':i.unit_price??'','Spolu':i.total??'','Mena':r.currency||''})));
 if(it.length)XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(it),'Položky');
-var vm=new Map();results.forEach(function(r){var k=r.vendor||'Neznámy';if(!vm.has(k))vm.set(k,{'Dodávateľ':k,'IČO':r.ico||'','DIČ':r.dic||'','IBAN':r.iban||'','Počet':0,'Suma':0,'Mena':r.currency||''});var v=vm.get(k);v['Počet']++;v['Suma']+=r.total||0});
-XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(Array.from(vm.values())),'Dodávatelia');
-XLSX.writeFile(wb,'faktury_'+new Date().toISOString().split('T')[0]+'.xlsx')}
+const vm=new Map();results.forEach(r=>{const k=r.vendor||'?';if(!vm.has(k))vm.set(k,{Dodávateľ:k,IČO:r.ico||'',Počet:0,Suma:0,Mena:r.currency||''});const v=vm.get(k);v.Počet++;v.Suma+=r.total||0});
+XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet([...vm.values()]),'Dodávatelia');
+XLSX.writeFile(wb,`faktury_${new Date().toISOString().split('T')[0]}.xlsx`)}
 
+// ===== HTML Report =====
 function generateHtmlReport(){if(!results.length)return;
-var ts=results.reduce(function(s,r){return s+(r.total||0)},0);var cur=[...new Set(results.map(function(r){return r.currency}).filter(Boolean))];
-var td=cur.length<=1?fmt(ts)+' '+(cur[0]||''):cur.map(function(c){return fmt(results.filter(function(r){return r.currency===c}).reduce(function(s,r){return s+(r.total||0)},0))+' '+c}).join(' · ');
-var rf=function(l,v){return v!=null&&v!==''?'<div style="display:flex;gap:6px;margin-bottom:3px"><span style="font-size:12px;color:#4e5268;min-width:70px">'+l+'</span><span style="font-size:13px;color:#cdd0dc">'+v+'</span></div>':''};
-var cc={high:'#22c55e',medium:'#eab308',low:'#ef4444'};
-var pages=results.map(function(d,idx){
-var orig='';if(d._originalDataUrl){if(d._originalMediaType==='application/pdf')orig='<iframe src="'+d._originalDataUrl+'" style="width:100%;height:600px;border:none;border-radius:8px"></iframe>';else orig='<img src="'+d._originalDataUrl+'" style="max-width:100%;border-radius:8px">'}
-var items='';if(d.items&&d.items.length){items='<h4 style="margin:16px 0 8px;font-size:11px;color:#636987;text-transform:uppercase;font-weight:600">Položky ('+d.items.length+')</h4><table style="width:100%;border-collapse:collapse;font-size:13px;border:1px solid #1c1e2e"><thead><tr><th style="text-align:left;padding:8px 12px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Popis</th><th style="text-align:right;padding:8px 12px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Mn.</th><th style="text-align:right;padding:8px 12px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Jedn.</th><th style="text-align:right;padding:8px 12px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Spolu</th></tr></thead><tbody>'+d.items.map(function(i){return'<tr><td style="padding:7px 12px;border-bottom:1px solid #141520">'+i.description+'</td><td style="padding:7px 12px;border-bottom:1px solid #141520;text-align:right;font-family:JetBrains Mono,monospace;font-size:12px">'+i.quantity+'</td><td style="padding:7px 12px;border-bottom:1px solid #141520;text-align:right;font-family:JetBrains Mono,monospace;font-size:12px">'+fmt(i.unit_price)+'</td><td style="padding:7px 12px;border-bottom:1px solid #141520;text-align:right;font-weight:600;font-family:JetBrains Mono,monospace;font-size:12px">'+fmt(i.total)+'</td></tr>'}).join('')+'</tbody></table>'}
-var mn=d._multiDoc?'<div style="margin-bottom:12px;padding:8px 12px;border-radius:8px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.15);font-size:12px;color:#a78bfa">Dokument '+d._docIndex+' z '+d._docTotal+' v súbore '+d._sourceFile+'</div>':'';
-return'<div id="inv-'+idx+'" style="background:#13141d;border:1px solid #1c1e2e;border-radius:14px;margin-bottom:24px;overflow:hidden;page-break-inside:avoid"><div style="padding:20px 24px;display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #1c1e2e;flex-wrap:wrap;gap:12px"><div><h2 style="font-size:20px;font-weight:700;color:#f0f0f0;margin:0">'+(d.vendor||'Neznámy')+'</h2><div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center">'+(d.date?'<span style="font-size:12px;padding:2px 10px;border-radius:6px;background:#1a1d2e;color:#636987;font-family:JetBrains Mono,monospace">'+d.date+'</span>':'')+(d.invoice_number?'<span style="font-size:12px;padding:2px 10px;border-radius:6px;background:#1a1d2e;color:#636987;font-family:JetBrains Mono,monospace">#'+d.invoice_number+'</span>':'')+'<span style="font-size:11px;font-weight:600;text-transform:uppercase;color:'+(cc[d.confidence]||'#666')+'">'+(d.confidence||'')+'</span></div></div><div style="text-align:right"><div style="font-size:11px;color:#636987;text-transform:uppercase">Celkom</div><div style="font-size:24px;font-weight:700;color:#a78bfa;font-family:JetBrains Mono,monospace">'+fmt(d.total)+' '+(d.currency||'')+'</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr"><div style="border-right:1px solid #1c1e2e;padding:16px;background:#0f1017;display:flex;align-items:flex-start;justify-content:center">'+orig+'</div><div style="padding:20px">'+mn+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px"><div><h4 style="margin:0 0 8px;font-size:11px;color:#636987;text-transform:uppercase;font-weight:600">Dodávateľ</h4>'+rf('Názov',d.vendor)+rf('Adresa',d.vendor_address)+rf('IČO',d.ico)+rf('DIČ',d.dic)+rf('IČ DPH',d.ic_dph)+rf('IBAN',d.iban)+'</div><div><h4 style="margin:0 0 8px;font-size:11px;color:#636987;text-transform:uppercase;font-weight:600">Dokument</h4>'+rf('Dátum',d.date)+rf('Splatnosť',d.due_date)+rf('Č. faktúry',d.invoice_number)+rf('Platba',d.payment_method)+'</div></div>'+items+'<div style="background:#181926;border-radius:10px;padding:14px 16px;border:1px solid #1c1e2e;margin-top:12px"><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px;color:#8b8fa3"><span>Základ</span><span style="font-family:JetBrains Mono,monospace;font-size:12px">'+fmt(d.subtotal)+'</span></div>'+(d.tax_rate?'<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px;color:#8b8fa3"><span>DPH ('+d.tax_rate+')</span><span style="font-family:JetBrains Mono,monospace;font-size:12px">'+fmt(d.tax_amount)+'</span></div>':'')+'<div style="display:flex;justify-content:space-between;padding:8px 0 0;font-size:14px;color:#f0f0f0;font-weight:700;border-top:2px solid #252838;margin-top:4px"><span>Celkom ('+(d.currency||'?')+')</span><span style="font-family:JetBrains Mono,monospace;color:#a78bfa;font-size:16px">'+fmt(d.total)+'</span></div></div>'+(d.notes?'<div style="background:#181926;border-radius:10px;padding:14px 16px;border:1px solid #1c1e2e;margin-top:8px"><p style="font-size:13px;color:#8b8fa3;margin:0">'+d.notes+'</p></div>':'')+'</div></div></div>'}).join('\n');
-var toc=results.map(function(r,i){return'<tr onclick="document.getElementById(\'inv-'+i+'\').scrollIntoView({behavior:\'smooth\'})" style="cursor:pointer"><td style="padding:9px 14px;border-bottom:1px solid #141520;font-family:JetBrains Mono,monospace;font-size:12px">'+r._filename+'</td><td style="padding:9px 14px;border-bottom:1px solid #141520">'+(r.vendor||'—')+'</td><td style="padding:9px 14px;border-bottom:1px solid #141520;font-family:JetBrains Mono,monospace;font-size:12px">'+(r.date||'—')+'</td><td style="padding:9px 14px;border-bottom:1px solid #141520;text-align:right;font-weight:600;font-family:JetBrains Mono,monospace;font-size:12px">'+fmt(r.total)+'</td><td style="padding:9px 14px;border-bottom:1px solid #141520">'+(r.currency||'—')+'</td></tr>'}).join('');
-var html='<!DOCTYPE html><html lang="sk"><head><meta charset="UTF-8"><title>Faktúry Report '+new Date().toISOString().split('T')[0]+'</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:DM Sans,sans-serif;background:#0f1017;color:#cdd0dc;padding:32px 24px}.w{max-width:1100px;margin:0 auto}@media print{body{background:#fff;color:#333}}</style></head><body><div class="w"><h1 style="font-size:24px;font-weight:700;color:#f0f0f0;margin-bottom:4px">Faktúry — Report</h1><p style="font-size:13px;color:#636987;margin-bottom:24px">'+new Date().toLocaleString('sk-SK')+' · '+results.length+' dokumentov</p><div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap"><div style="background:#13141d;border:1px solid #1c1e2e;border-radius:10px;padding:14px 18px;flex:1;min-width:120px"><div style="font-size:22px;font-weight:700;color:#f0f0f0;font-family:JetBrains Mono,monospace">'+results.length+'</div><div style="font-size:11px;color:#636987;text-transform:uppercase">Dokumentov</div></div><div style="background:#13141d;border:1px solid #1c1e2e;border-radius:10px;padding:14px 18px;flex:1.5;min-width:120px"><div style="font-size:22px;font-weight:700;color:#a78bfa;font-family:JetBrains Mono,monospace">'+td+'</div><div style="font-size:11px;color:#636987;text-transform:uppercase">Celkom</div></div></div><div style="background:#13141d;border:1px solid #1c1e2e;border-radius:12px;overflow:auto;margin-bottom:32px"><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="text-align:left;padding:10px 14px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Súbor</th><th style="text-align:left;padding:10px 14px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Dodávateľ</th><th style="text-align:left;padding:10px 14px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Dátum</th><th style="text-align:right;padding:10px 14px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Celkom</th><th style="text-align:left;padding:10px 14px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Mena</th></tr></thead><tbody>'+toc+'</tbody></table></div>'+pages+'</div></body></html>';
-var blob=new Blob([html],{type:'text/html;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='faktury_report_'+new Date().toISOString().split('T')[0]+'.html';a.click();URL.revokeObjectURL(a.href)}
+const ts=results.reduce((s,r)=>s+(r.total||0),0);const cur=[...new Set(results.map(r=>r.currency).filter(Boolean))];
+const td=cur.length<=1?`${fmt(ts)} ${cur[0]||''}`:cur.map(c=>`${fmt(results.filter(r=>r.currency===c).reduce((s,r)=>s+(r.total||0),0))} ${c}`).join(' · ');
+const rf=(l,v)=>v!=null&&v!==''?`<div style="display:flex;gap:6px;margin-bottom:3px"><span style="font-size:12px;color:#4e5268;min-width:70px">${l}</span><span style="font-size:13px;color:#cdd0dc">${v}</span></div>`:'';
+const cc={high:'#22c55e',medium:'#eab308',low:'#ef4444',edited:'#60a5fa'};
+const pages=results.map((d,idx)=>{const rot=d._rotation||0;const rotS=rot?`transform:rotate(${rot}deg);`:'';
+let orig='';if(d._originalDataUrl){orig=d._originalMediaType==='application/pdf'?`<iframe src="${d._originalDataUrl}" style="width:100%;height:600px;border:none"></iframe>`:`<img src="${d._originalDataUrl}" style="max-width:100%;border-radius:8px;${rotS}">`}
+let items='';if(d.items?.length){items=`<h4 style="margin:16px 0 8px;font-size:11px;color:#636987;text-transform:uppercase;font-weight:600">Položky (${d.items.length})</h4><table style="width:100%;border-collapse:collapse;font-size:13px;border:1px solid #1c1e2e"><thead><tr><th style="text-align:left;padding:8px 12px;background:#181926;color:#636987;font-size:11px;text-transform:uppercase;border-bottom:1px solid #1c1e2e">Popis</th><th style="text-align:right;padding:8px 12px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Mn.</th><th style="text-align:right;padding:8px 12px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Jedn.</th><th style="text-align:right;padding:8px 12px;background:#181926;color:#636987;font-size:11px;border-bottom:1px solid #1c1e2e">Spolu</th></tr></thead><tbody>${d.items.map(i=>`<tr><td style="padding:7px 12px;border-bottom:1px solid #141520">${i.description}</td><td style="padding:7px 12px;border-bottom:1px solid #141520;text-align:right;font-family:monospace">${i.quantity}</td><td style="padding:7px 12px;border-bottom:1px solid #141520;text-align:right;font-family:monospace">${fmt(i.unit_price)}</td><td style="padding:7px 12px;border-bottom:1px solid #141520;text-align:right;font-weight:600;font-family:monospace">${fmt(i.total)}</td></tr>`).join('')}</tbody></table>`}
+return`<div id="inv-${idx}" style="background:#13141d;border:1px solid #1c1e2e;border-radius:14px;margin-bottom:24px;overflow:hidden;page-break-inside:avoid"><div style="padding:20px 24px;display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #1c1e2e;flex-wrap:wrap;gap:12px"><div><h2 style="font-size:20px;font-weight:700;color:#f0f0f0;margin:0">${d.vendor||'—'}</h2><div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">${d.date?`<span style="font-size:12px;padding:2px 10px;border-radius:6px;background:#1a1d2e;color:#636987;font-family:monospace">${d.date}</span>`:''}${d.invoice_number?`<span style="font-size:12px;padding:2px 10px;border-radius:6px;background:#1a1d2e;color:#636987;font-family:monospace">#${d.invoice_number}</span>`:''}<span style="font-size:11px;font-weight:600;color:${cc[d.confidence]||'#666'}">${d.confidence||''}</span></div></div><div style="text-align:right"><div style="font-size:11px;color:#636987;text-transform:uppercase">Celkom</div><div style="font-size:24px;font-weight:700;color:#a78bfa;font-family:monospace">${fmt(d.total)} ${d.currency||''}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr"><div style="border-right:1px solid #1c1e2e;padding:16px;background:#0f1017;display:flex;align-items:flex-start;justify-content:center">${orig}</div><div style="padding:20px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px"><div>${rf('Názov',d.vendor)}${rf('Adresa',d.vendor_address)}${rf('IČO',d.ico)}${rf('DIČ',d.dic)}${rf('IČ DPH',d.ic_dph)}${rf('IBAN',d.iban)}</div><div>${rf('Dátum',d.date)}${rf('Č. dokladu',d.invoice_number)}${rf('Č. účtenky',d.receipt_number)}${rf('Platba',d.payment_method)}</div></div>${items}<div style="background:#181926;border-radius:10px;padding:14px 16px;border:1px solid #1c1e2e;margin-top:12px"><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px;color:#8b8fa3"><span>Základ</span><span style="font-family:monospace">${fmt(d.subtotal)}</span></div>${d.tax_rate?`<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px;color:#8b8fa3"><span>DPH (${d.tax_rate})</span><span style="font-family:monospace">${fmt(d.tax_amount)}</span></div>`:''}<div style="display:flex;justify-content:space-between;padding:8px 0 0;color:#f0f0f0;font-weight:700;border-top:2px solid #252838;margin-top:4px"><span>Celkom</span><span style="font-family:monospace;color:#a78bfa;font-size:16px">${fmt(d.total)}</span></div></div></div></div></div>`}).join('');
 
-function resetAll(){files=[];results=[];fileErrors=[];selectedIdx=null;aborted=false;document.getElementById('dropZone').classList.remove('hidden');document.getElementById('processPanel').classList.add('hidden');document.getElementById('resultsSection').classList.add('hidden');document.getElementById('resetBtn').classList.add('hidden');document.getElementById('progressWrap').classList.add('hidden');document.getElementById('startBtn').classList.remove('hidden');document.getElementById('stopBtn').classList.add('hidden');document.getElementById('fileInput').value='';document.getElementById('detailPanel').innerHTML=''}
+const toc=results.map((r,i)=>`<tr onclick="document.getElementById('inv-${i}').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><td style="padding:9px 14px;border-bottom:1px solid #141520;font-family:monospace;font-size:12px">${r._displayName||r._filename}</td><td style="padding:9px 14px;border-bottom:1px solid #141520">${r.vendor||'—'}</td><td style="padding:9px 14px;border-bottom:1px solid #141520;font-family:monospace;font-size:12px">${r.date||'—'}</td><td style="padding:9px 14px;border-bottom:1px solid #141520;text-align:right;font-weight:600;font-family:monospace;font-size:12px">${fmt(r.total)}</td><td style="padding:9px 14px;border-bottom:1px solid #141520">${r.currency||''}</td></tr>`).join('');
+
+const html=`<!DOCTYPE html><html lang="sk"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Faktúry ${new Date().toISOString().split('T')[0]}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:sans-serif;background:#0f1017;color:#cdd0dc;padding:32px 24px}.w{max-width:1100px;margin:0 auto}@media(max-width:800px){[style*="grid-template-columns: 1fr 1fr"],[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}}@media print{body{background:#fff;color:#333}}</style></head><body><div class="w"><h1 style="font-size:24px;font-weight:700;color:#f0f0f0;margin-bottom:4px">Faktúry — Report</h1><p style="font-size:13px;color:#636987;margin-bottom:24px">${new Date().toLocaleString('sk-SK')} · ${results.length} dokladov</p><div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap"><div style="background:#13141d;border:1px solid #1c1e2e;border-radius:10px;padding:14px 18px;flex:1;min-width:100px"><div style="font-size:22px;font-weight:700;color:#f0f0f0;font-family:monospace">${results.length}</div><div style="font-size:11px;color:#636987;text-transform:uppercase">Dokladov</div></div><div style="background:#13141d;border:1px solid #1c1e2e;border-radius:10px;padding:14px 18px;flex:1.5;min-width:100px"><div style="font-size:22px;font-weight:700;color:#a78bfa;font-family:monospace">${td}</div><div style="font-size:11px;color:#636987;text-transform:uppercase">Celkom</div></div></div><div style="background:#13141d;border:1px solid #1c1e2e;border-radius:12px;overflow:auto;margin-bottom:32px"><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="text-align:left;padding:10px 14px;background:#181926;color:#636987;font-size:11px;text-transform:uppercase;border-bottom:1px solid #1c1e2e">Súbor</th><th style="text-align:left;padding:10px 14px;background:#181926;color:#636987;font-size:11px;text-transform:uppercase;border-bottom:1px solid #1c1e2e">Dodávateľ</th><th style="text-align:left;padding:10px 14px;background:#181926;color:#636987;font-size:11px;text-transform:uppercase;border-bottom:1px solid #1c1e2e">Dátum</th><th style="text-align:right;padding:10px 14px;background:#181926;color:#636987;font-size:11px;text-transform:uppercase;border-bottom:1px solid #1c1e2e">Celkom</th><th style="text-align:left;padding:10px 14px;background:#181926;color:#636987;font-size:11px;text-transform:uppercase;border-bottom:1px solid #1c1e2e">Mena</th></tr></thead><tbody>${toc}</tbody></table></div>${pages}</div></body></html>`;
+const blob=new Blob([html],{type:'text/html;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`faktury_${new Date().toISOString().split('T')[0]}.html`;a.click();URL.revokeObjectURL(a.href)}
+
+function resetAll(){files=[];results=[];fileErrors=[];selectedIdx=null;editMode=false;aborted=false;$('dropZone').classList.remove('hidden');$('processPanel').classList.add('hidden');$('resultsSection').classList.add('hidden');$('resetBtn').classList.add('hidden');$('progressWrap').classList.add('hidden');$('startBtn').classList.remove('hidden');$('stopBtn').classList.add('hidden');$('fileInput').value='';$('detailPanel').innerHTML=''}
+const $=id=>document.getElementById(id);
 updateDbBar();
 </script>
 </body>
